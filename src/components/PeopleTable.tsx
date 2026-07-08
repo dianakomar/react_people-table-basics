@@ -10,22 +10,22 @@ type Props = {
 export const PeopleTable = ({ people, selectedSlug }: Props) => {
   const isSelected = (person: Person) => selectedSlug === person.slug;
 
-  function getPersonLink(name: string, parents: Person[]) {
-    const person = parents.find(p => p.name === name);
+  // function getPersonLink(name: string, parents: Person[]) {
+  //   const person = parents.find(p => p.name === name);
 
-    if (!person) {
-      return name;
-    }
+  //   if (!person) {
+  //     return name;
+  //   }
 
-    return (
-      <a
-        href={`#/people/${person.slug}`}
-        className={classNames({ 'has-text-danger': person.sex === 'f' })}
-      >
-        {name}
-      </a>
-    );
-  }
+  //   return (
+  //     <a
+  //       href={`#/people/${person.slug}`}
+  //       className={classNames({ 'has-text-danger': person.sex === 'f' })}
+  //     >
+  //       {name}
+  //     </a>
+  //   );
+  // }
 
   return (
     <table
@@ -44,29 +44,47 @@ export const PeopleTable = ({ people, selectedSlug }: Props) => {
       </thead>
 
       <tbody>
-        {people.map(pers => (
-          <tr
-            className={classNames({
-              'has-background-warning': isSelected(pers),
-            })}
-            data-cy="person"
-            key={pers.name}
-          >
-            <td>
-              <PersonLink person={pers} />
-            </td>
+        {people.map(pers => {
+          const motherPerson = pers.motherName
+            ? people.find(p => p.name === pers.motherName)
+            : undefined;
 
-            <td>{pers.sex}</td>
-            <td>{pers.born}</td>
-            <td>{pers.died}</td>
-            <td>
-              {pers.motherName ? getPersonLink(pers.motherName, people) : '-'}
-            </td>
-            <td>
-              {pers.fatherName ? getPersonLink(pers.fatherName, people) : '-'}
-            </td>
-          </tr>
-        ))}
+          const fatherPerson = pers.fatherName
+            ? people.find(p => p.name === pers.fatherName)
+            : undefined;
+
+          return (
+            <tr
+              className={classNames({
+                'has-background-warning': isSelected(pers),
+              })}
+              data-cy="person"
+              key={pers.name}
+            >
+              <td>
+                <PersonLink person={pers} />
+              </td>
+
+              <td>{pers.sex}</td>
+              <td>{pers.born}</td>
+              <td>{pers.died}</td>
+              <td>
+                {motherPerson ? (
+                  <PersonLink person={motherPerson} />
+                ) : (
+                  pers.motherName || '-'
+                )}
+              </td>
+              <td>
+                {fatherPerson ? (
+                  <PersonLink person={fatherPerson} />
+                ) : (
+                  pers.fatherName || '-'
+                )}
+              </td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
