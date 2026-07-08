@@ -1,5 +1,6 @@
 import { Person } from '../types';
 import classNames from 'classnames';
+import { PersonLink } from './PersonLink';
 
 type Props = {
   people: Person[];
@@ -52,12 +53,7 @@ export const PeopleTable = ({ people, selectedSlug }: Props) => {
             key={pers.name}
           >
             <td>
-              <a
-                href={`#/people/${pers.slug}`}
-                className={classNames({ 'has-text-danger': pers.sex === 'f' })}
-              >
-                {pers.name}
-              </a>
+              <PersonLink person={pers} />
             </td>
 
             <td>{pers.sex}</td>
